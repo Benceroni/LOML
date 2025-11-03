@@ -1,0 +1,16 @@
+main,header,footer{
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+#boardTitles, #board{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: .5rem;
+}
+
+.topicHeading{
+    padding: 1rem;
+    text-align: center;
+    background-color: aliceblue;
+}
