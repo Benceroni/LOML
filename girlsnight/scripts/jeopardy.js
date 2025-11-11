@@ -245,9 +245,7 @@ function buildTopicBlock(topicName){
 }
 
 function showQuestion(_question,points,index0,index1){
-    // console.log(`question: ${_question} points: ${points}`);
-    // console.log(index1)
-    // console.log(questions[index0].questions[index1]);
+    
     questions[index0].questions[index1]["show"] = false;
     console.log(questions[index0].questions[index1]["show"])
     renderAllBlocks();
