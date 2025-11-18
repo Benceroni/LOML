@@ -38,3 +38,19 @@ main,header,footer{
 #board .emptyBlock{
     height: 1.3rem;
 }
+
+#fullScreenQuestion{
+    background-color: rgb(255, 162, 178);
+    text-align: center;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+#fullScreenQuestion button{
+    font-size: large;
+    padding: .75rem;
+    background-color: rgb(255, 194, 204);
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 2px 2px 5px rgb(255, 80, 109);
+}

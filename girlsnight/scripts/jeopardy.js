@@ -3,18 +3,20 @@ questions = [
         topic: "Guess Who",
         questions : [
             {
-                question: "Who made the firstmove on their first kiss? Josiah or Bailey",
+                question: "Who made the first move on their first kiss? Josiah or Bailey",
                 answer: "Bailey",
                 points: 100,
                 show: true,
                 double: false
+
             },
             {
                 question : "Who said I love you first?",
                 answer : "Josiah",
                 points : 200,
                 show: true,
-                double: true
+                double: true,
+                doubleQuestion:"How far into the relationship did he say it?"
             },
             {
                 question : "Who made the first move? Josiah or Bailey?",
@@ -24,18 +26,20 @@ questions = [
                 double: false
             },
             {
-                question : "Who’s favorite date is:<br>Valentine’s Mexican date<br>the first time they cooked together",
+                question : "Who’s favorite date is: Valentine’s Mexican date<br>",
                 answer : "Valentines Mexican- Josiah<br>First time cooking together- Bailey",
                 points : 400,
                 show: true,
-                double: false
+                double: true,
+                doubleQuestion: "What is Bailey's favorite date?"
             },
             {
                 question : "Who said it best, Josiah or Bailey?",
                 answer : "Bailey",
                 points : 500,
                 show: true,
-                double: true
+                double: true,
+                doubleQuestion: "What is Josiah's saying?"
             }
             ]
     },
@@ -202,29 +206,35 @@ questions = [
 
 ]
 
-boardHeader = document.querySelector("#boardTitles")
-gameBoard = document.querySelector("#board")
+let boardHeader = null; 
+let gameBoard = null;
 
-questions.forEach(i => {
-    boardHeader.innerHTML += buildTopicBlock(i.topic);
-});
+resetBoard();
+
 
 function renderAllBlocks(){
+
+    
+    questions.forEach(i => {
+    boardHeader.innerHTML += buildTopicBlock(i.topic);
+    });
+
+    console.log("rendering all blocks")
     gameBoard.innerHTML = ''
     questions.forEach(questionCluster => {
         var builtBlock = `<div>`
         questionCluster.questions.forEach(element => {
-            // builtBlock += `<p>${element.points}</p>`
             if (element.show == true){
-                builtBlock += buildBlock(element.points,element.question,questions.indexOf(questionCluster),questionCluster.questions.indexOf(element));
+                let dailyDoubleTernitary = element.dailyDoubleQuestion = null ? null : element.dailyDoubleQuestion;
+                builtBlock += buildBlock(element.points,element.question,questions.indexOf(questionCluster),questionCluster.questions.indexOf(element),element.dailyDouble,dailyDoubleTernitary);
             }
             else{
                 builtBlock += buildEmptyBlock();
             }
-            // console.log(buildBlock(element.points,element.question))
         });
         builtBlock += "</div>"
         gameBoard.innerHTML += builtBlock
+        // console.log(gameBoard.innerHTML);
         builtBlock=""
     });
     // console.table(questions);
@@ -232,8 +242,8 @@ function renderAllBlocks(){
 
 renderAllBlocks();
 
-function buildBlock(points,question,indexZero,indexOne){
-    return `<button type="button" class="block" onclick="showQuestion('${question}','${points}','${indexZero}','${indexOne}')">${points}</button>`
+function buildBlock(points,question,indexZero,indexOne,dailyDouble,dailyDoubleQuestion){    
+    return `<button type="button" class="block" onclick="showQuestion('${question}','${points}','${indexZero}','${indexOne}','${dailyDouble}','${dailyDoubleQuestion}')">${points}</button>`
 }
 
 function buildEmptyBlock(){
@@ -244,15 +254,27 @@ function buildTopicBlock(topicName){
     return `<h3 class="topicHeading">${topicName}</h3>`
 }
 
-function showQuestion(_question,points,index0,index1){
-    
+function showQuestion(_question,points,index0,index1,dailyDouble,dailyDoubleQuestion){
     questions[index0].questions[index1]["show"] = false;
-    console.log(questions[index0].questions[index1]["show"])
-    renderAllBlocks();
+    // console.log(questions[index0].questions[index1]["show"])
+    fullScreenQuestion(_question,points,dailyDouble,dailyDoubleQuestion);
+    // renderAllBlocks();
+}
+
+function fullScreenQuestion(_question,_points,_dailyDouble,dailyDoubleQuestion){
+        console.log("Daily Double: "+ dailyDouble+" Daily  Double Question:"+dailyDoubleQuestion)
+    inlineDailyDoubleHTML = _dailyDouble ? `<button id="dailyDoubleButton" type="button" onclick="addDailyDouble(${dailyDoubleQuestion})" >Reveal Daily Double</button>`: '';
+    document.querySelector("main").innerHTML = `<section id="fullScreenQuestion"><h3>${_points} points</h3><h2>${_question}</h2>${inlineDailyDoubleHTML}<button type = "button" onclick="resetBoard();renderAllBlocks();">Return to Questions</><section/>`
+}
+
+function addDailyDouble(dailyDoubleQuestion){
+    document.querySelector("main").innerHTML += `<section id="fullScreenQuestion"><h3>${_points} points</h3><h2>${_question}</h2>${inlineDailyDoubleHTML}<button type = "button" onclick="resetBoard();renderAllBlocks();">Return to Questions</><section/>`
 }
 
 
-
 function resetBoard(){
-    document.querySelector("main").innerHTML =`<div id="boardTitles"></div><div id="board"></div>`
+    document.querySelector("main").innerHTML = `<div id="boardTitles"></div>
+        <div id="board"></div>`
+    boardHeader = document.querySelector("#boardTitles")
+    gameBoard = document.querySelector("#board")
 }
