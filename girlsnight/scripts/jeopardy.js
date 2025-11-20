@@ -8,7 +8,6 @@ questions = [
                 points: 100,
                 show: true,
                 double: false
-
             },
             {
                 question : "Who said I love you first?",
@@ -26,20 +25,20 @@ questions = [
                 double: false
             },
             {
-                question : "Who’s favorite date is: Valentine’s Mexican date<br>",
+                question : "Who’s favorite date is: Valentine’s Mexican date",
                 answer : "Valentines Mexican- Josiah<br>First time cooking together- Bailey",
                 points : 400,
                 show: true,
                 double: true,
-                doubleQuestion: "What is Bailey's favorite date?"
+                doubleQuestion: "What is Bailey`s favorite date?"
             },
             {
-                question : "Who said it best, Josiah or Bailey?",
+                question : "Who said it best- Josiah or Bailey?",
                 answer : "Bailey",
                 points : 500,
                 show: true,
                 double: true,
-                doubleQuestion: "What is Josiah's saying?"
+                doubleQuestion: "What is Josiah`s saying?"
             }
             ]
     },
@@ -115,7 +114,7 @@ questions = [
                 double: false
             },
             {
-                question : "What is Bailey’s favorite book/series?",
+                question : "What is Bailey's favorite book/series?",
                 answer : "",
                 points : 500,
                 show: true,
@@ -211,7 +210,6 @@ let gameBoard = null;
 
 resetBoard();
 
-
 function renderAllBlocks(){
 
     
@@ -224,9 +222,11 @@ function renderAllBlocks(){
     questions.forEach(questionCluster => {
         var builtBlock = `<div>`
         questionCluster.questions.forEach(element => {
+            // console.table(element);
+
             if (element.show == true){
-                let dailyDoubleTernitary = element.dailyDoubleQuestion = null ? null : element.dailyDoubleQuestion;
-                builtBlock += buildBlock(element.points,element.question,questions.indexOf(questionCluster),questionCluster.questions.indexOf(element),element.dailyDouble,dailyDoubleTernitary);
+                // console.log(element.doubleQuestion)
+                builtBlock += buildBlock(element.points,element.question,questions.indexOf(questionCluster),questionCluster.questions.indexOf(element),element.double,element.doubleQuestion);
             }
             else{
                 builtBlock += buildEmptyBlock();
@@ -234,16 +234,18 @@ function renderAllBlocks(){
         });
         builtBlock += "</div>"
         gameBoard.innerHTML += builtBlock
-        // console.log(gameBoard.innerHTML);
+
         builtBlock=""
     });
-    // console.table(questions);
+
 }
 
 renderAllBlocks();
 
-function buildBlock(points,question,indexZero,indexOne,dailyDouble,dailyDoubleQuestion){    
+function buildBlock(points,question,indexZero,indexOne,dailyDouble,dailyDoubleQuestion){
+
     return `<button type="button" class="block" onclick="showQuestion('${question}','${points}','${indexZero}','${indexOne}','${dailyDouble}','${dailyDoubleQuestion}')">${points}</button>`
+
 }
 
 function buildEmptyBlock(){
@@ -262,13 +264,65 @@ function showQuestion(_question,points,index0,index1,dailyDouble,dailyDoubleQues
 }
 
 function fullScreenQuestion(_question,_points,_dailyDouble,dailyDoubleQuestion){
-        console.log("Daily Double: "+ dailyDouble+" Daily  Double Question:"+dailyDoubleQuestion)
-    inlineDailyDoubleHTML = _dailyDouble ? `<button id="dailyDoubleButton" type="button" onclick="addDailyDouble(${dailyDoubleQuestion})" >Reveal Daily Double</button>`: '';
-    document.querySelector("main").innerHTML = `<section id="fullScreenQuestion"><h3>${_points} points</h3><h2>${_question}</h2>${inlineDailyDoubleHTML}<button type = "button" onclick="resetBoard();renderAllBlocks();">Return to Questions</><section/>`
+
+
+    const questionCard      = document.createElement("section");
+
+    const headingElement    = document.createElement("h3");
+    const questionElement   = document.createElement("h2")
+    const dailyDoubleButton = document.createElement("button");
+    const returnButtonElement     = document.createElement("button"); 
+    
+    headingElement.textContent      = `${_points} points`;
+    questionElement.textContent     = `${_question}`;
+    dailyDoubleButton.textContent   = `reveal daily double`;
+    returnButtonElement.textContent = `return to questions`;
+
+    questionCard.setAttribute("id","fullScreenQuestion");
+
+    returnButtonElement.setAttribute("type","button");
+    returnButtonElement.addEventListener("click", () =>{resetBoard(); renderAllBlocks();});
+
+    questionCard.appendChild(headingElement);
+    questionCard.appendChild(questionElement);
+
+    console.log("daily double in full screen question:" + _dailyDouble);
+    if (_dailyDouble == "true"){
+
+        console.log("daily double true")
+        console.log(dailyDoubleQuestion);
+        dailyDoubleButton.setAttribute("type","button");
+        dailyDoubleButton.setAttribute("id","removeMe");
+        dailyDoubleButton.addEventListener("click", ()=>{addDailyDouble(dailyDoubleQuestion,dailyDoubleButton)});
+        questionCard.appendChild(dailyDoubleButton);
+
+    }
+
+        questionCard.appendChild(returnButtonElement);
+
+    document.querySelector("main").innerHTML = '';
+    document.querySelector("main").appendChild(questionCard);
 }
 
 function addDailyDouble(dailyDoubleQuestion){
-    document.querySelector("main").innerHTML += `<section id="fullScreenQuestion"><h3>${_points} points</h3><h2>${_question}</h2>${inlineDailyDoubleHTML}<button type = "button" onclick="resetBoard();renderAllBlocks();">Return to Questions</><section/>`
+
+    const doubleButton = document.querySelector("#removeMe");
+
+    const removeNode = document.querySelector("#fullScreenQuestion").removeChild(doubleButton);
+
+    console.log("removing event listener from "+  doubleButton);
+
+    const doubleCard = document.createElement("section");
+    const questionElement   = document.createElement("h2")
+    
+    questionElement.textContent = `${dailyDoubleQuestion}`;
+
+    doubleCard.setAttribute("id","fullScreenQuestion");
+    doubleCard.appendChild(questionElement);
+
+    document.querySelector("Main").appendChild(doubleCard);
+
+    // document.querySelector("main").innerHTML += `<section id="fullScreenQuestion"><h2>${dailyDoubleQuestion}</h2><button type = "button" onclick="resetBoard();renderAllBlocks();">Return to Questions</><section/>`
 }
 
 
